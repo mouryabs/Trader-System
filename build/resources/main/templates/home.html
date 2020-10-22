@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>HTML Forms</h2>
+
+<form id="formElem">
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date">
+    <br><br>
+
+    <label for="tickers">Choose a Ticker:</label>
+    <select name="tickers" id="tickers">
+        <option value="spy_equity">SPY Equity</option>
+        <option value="qqq_equity">QQQ Equity</option>
+    </select>
+    <br><br>
+
+    <label for="traders">Choose a Trader:</label>
+    <select name="traders" id="traders">
+        <option value="1">1</option>
+        <option value="2">2</option>
+    </select>
+    <br><br>
+
+    <label for="sides">Choose a Side:</label>
+    <select name="sides" id="sides">
+        <option value="b">B</option>
+        <option value="S">S</option>
+    </select>
+
+    <br><br>
+    <label for="nos">Number of contracts:</label><br>
+    <input type="number" id="noc" name="noc" value="10"><br>
+
+    <br><br>
+    <label for="percentage">Choose a percentage:</label>
+    <input type="number" id="percentage" step="0.01" name="percentage" min="1" max="100">
+
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+<script>
+    formElem.onsubmit = async (e) => {
+        e.preventDefault();
+        var form = document.querySelector("#formElem");
+
+        data = {
+            traderName : form.querySelector('#traders option:checked').value,
+            date : form.querySelector('input[name="date"]').value,
+            ticker : form.querySelector('#tickers option:checked').value,
+            side : form.querySelector('#sides option:checked').value,
+            numberOfContract : form.querySelector('input[name="noc"]').value,
+            positionPercentage : form.querySelector('input[name="percentage"]').value
+        }
+
+        console.log(data)
+        let response = await fetch('http://localhost:8000/executeTrade', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        alert(response.status);
+        let text = await response.text(); // read response body as text
+        document.querySelector("#decoded").innerHTML = text;
+    };
+</script>
+</html>
